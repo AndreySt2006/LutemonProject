@@ -1,7 +1,7 @@
 package com.example.oop_project;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.oop_project.DataProvider.DataProvider;
 import com.example.oop_project.adapter.LutemonAdapter;
-import com.example.oop_project.container.DataContainer;
 import com.example.oop_project.model.Lutemon;
 
 import java.util.ArrayList;
@@ -26,33 +25,24 @@ public class Training_lutemon extends AppCompatActivity {
     private LutemonAdapter adapter;
     private TextView tvEmptyView;
     private RecyclerView recyclerTraining;
-    private DataContainer<Lutemon> selectedContainer;
+    private ArrayList<Lutemon> lutemonsInTraining;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_training_lutemon);
+
         recyclerTraining = findViewById(R.id.recycler_training);
         recyclerTraining.setLayoutManager(new LinearLayoutManager(this));
         tvEmptyView = findViewById(R.id.tv_empty_view);
-        selectedContainer = new DataContainer<>();
-        // Initialize adapter
-        List<Lutemon> lutemonList = DataProvider.getInstance().getLutemonData();
-        List<Lutemon> selectedLutemons = getIntent().getParcelableArrayListExtra("selected");
-        List<Lutemon> fullInforSelectedLutemon = new ArrayList<>();
-        for (Lutemon selectedLtm : selectedLutemons) {
-            for (Lutemon lutemon : lutemonList) {
-                if (selectedLtm.getName().equals(lutemon.getName())) {
-                    fullInforSelectedLutemon.add(lutemon);
-                }
-            }
-        }
-        System.out.println(fullInforSelectedLutemon);
-        for (Lutemon seLTM : fullInforSelectedLutemon) {
-            selectedContainer.addData(seLTM);
-        }
-        setupRecyclerView();
+
+        lutemonsInTraining = getIntent().getParcelableArrayListExtra("selectedLutemons");
+
+        adapter = new LutemonAdapter(this, new ArrayList<>(lutemonsInTraining));
+        recyclerTraining.setAdapter(adapter);
+
+        updateUI(lutemonsInTraining);
         setupButtonListeners();
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.training_main), (v, insets) -> {
@@ -61,57 +51,60 @@ public class Training_lutemon extends AppCompatActivity {
             return insets;
         });
     }
-    private void setupRecyclerView() {
-        adapter = new LutemonAdapter(this, new ArrayList<>());
-        recyclerTraining.setAdapter(adapter);
-    }
-    private void setupButtonListeners() {
-        Button btnTrain = findViewById(R.id.btn_battle);
-        btnTrain.setOnClickListener(v->{
-            recyclerTraining.setAdapter(adapter);
-            refreshData();
-            Toast.makeText(Training_lutemon.this,"Training in progress", Toast.LENGTH_SHORT).show();
-        });
-        Button btnViewHome = findViewById(R.id.btn_arenaToHome);
-        btnViewHome.setOnClickListener(v->{
-            Intent intent2 = new Intent(Training_lutemon.this, MainActivity.class);
-            startActivity(intent2);
-        });
-    }
-    private void updateAdapterLutemon(List<Lutemon> lutemonList) {
-        adapter.updateLutemon(lutemonList);
 
-        // Show/hide empty view
-        if (lutemonList.isEmpty()) {
-            tvEmptyView.setVisibility(android.view.View.VISIBLE);
-            recyclerTraining.setVisibility(android.view.View.GONE);
-        } else {
-            tvEmptyView.setVisibility(android.view.View.GONE);
-            recyclerTraining.setVisibility(android.view.View.VISIBLE);
-        }
+    private void setupButtonListeners() {
+        Button btnTrain = findViewById(R.id.btn_train);
+        btnTrain.setOnClickListener(v -> trainSelectedLutemons());
+
+        Button btnViewHome = findViewById(R.id.btn_trainingToHome);
+        btnViewHome.setOnClickListener(v -> finish());
     }
-    private void refreshData() {
-        // Get fresh data from DataProvider
-        List<Lutemon> lutemonList = DataProvider.getInstance().getLutemonData();
-        List<Lutemon> currentData = getIntent().getParcelableArrayListExtra("selected");
-        List<Lutemon> updatedData = new ArrayList<>();
-        for (Lutemon currentltm : currentData) {
-            currentltm.setAttack(Integer.parseInt(currentltm.getAttack()) + 1);
-            currentltm.setDefense(Integer.parseInt(currentltm.getDefense()) + 1);
-            currentltm.setExperience(Integer.parseInt(currentltm.getExperience()) + 1);
-            currentltm.setHealth(Integer.parseInt(currentltm.getHealth()) + 1);
-            updatedData.add(currentltm);
+
+    private void trainSelectedLutemons() {
+        if (lutemonsInTraining == null || lutemonsInTraining.isEmpty()) {
+            Toast.makeText(this, "No Lutemons to train.", Toast.LENGTH_SHORT).show();
+            return;
         }
-        for (Lutemon updateddataLTM : lutemonList) {
-            for (Lutemon lutemonInUpdatedData : updatedData) {
-                if (updateddataLTM.getName().equals(lutemonInUpdatedData.getName())) {
-                    updateddataLTM.setAttack(Integer.parseInt(lutemonInUpdatedData.getAttack()));
-                    updateddataLTM.setDefense(Integer.parseInt(lutemonInUpdatedData.getDefense()));
-                    updateddataLTM.setHealth(Integer.parseInt(lutemonInUpdatedData.getHealth()));
-                    updateddataLTM.setExperience(Integer.parseInt(lutemonInUpdatedData.getExperience()));
-                }
+
+        DataProvider dataProvider = DataProvider.getInstance();
+        List<Lutemon> updatedListForAdapter = new ArrayList<>();
+
+        for (Lutemon lutemonToTrain : lutemonsInTraining) {
+            Lutemon originalLutemon = dataProvider.getLutemonByName(lutemonToTrain.getName());
+
+            if (originalLutemon != null) {
+                int baseAttack = originalLutemon.getAttack() - originalLutemon.getExperience(); // Estimate base attack if needed
+
+                originalLutemon.setExperience(originalLutemon.getExperience() + 1);
+                originalLutemon.setAttack(originalLutemon.getAttack() + 1); // Simple +1 attack for simplicity here
+                originalLutemon.incrementTrainingSessions();
+
+                // Update the DataProvider
+                dataProvider.updateLutemon(originalLutemon);
+                updatedListForAdapter.add(originalLutemon); // Add updated original to list
+                dataProvider.incrementTotalTrainingSessions();
+            } else {
+                updatedListForAdapter.add(lutemonToTrain); // Add potentially outdated copy
+                System.err.println("Warning: Trained Lutemon '" + lutemonToTrain.getName() + "' not found in DataProvider for update.");
             }
         }
-        updateAdapterLutemon(updatedData);
+
+        lutemonsInTraining.clear();
+        lutemonsInTraining.addAll(updatedListForAdapter);
+        updateUI(lutemonsInTraining);
+        Toast.makeText(this, "Training complete!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void updateUI(List<Lutemon> lutemonList) {
+        if (adapter != null) {
+            adapter.updateLutemon(new ArrayList<>(lutemonList));
+        }
+        if (lutemonList == null || lutemonList.isEmpty()) {
+            tvEmptyView.setVisibility(View.VISIBLE);
+            recyclerTraining.setVisibility(View.GONE);
+        } else {
+            tvEmptyView.setVisibility(View.GONE);
+            recyclerTraining.setVisibility(View.VISIBLE);
+        }
     }
 }

@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class DataContainer<T> {
-    private final List<T> data; // Use List instead of ArrayList
+    private final List<T> data;
 
     public DataContainer() {
         this.data = new ArrayList<>();
@@ -22,12 +22,10 @@ public class DataContainer<T> {
     public DataContainer<T> filter(Predicate<T> predicate) {
         DataContainer<T> filteredContainer = new DataContainer<>();
 
-        // Using stream and lambda to filter items
         List<T> filteredItems = data.stream()
-                .filter(predicate) //filter by condition
+                .filter(predicate)
                 .collect(Collectors.toList());
 
-        // Add filtered items to the new container
         filteredItems.forEach(filteredContainer::addData);
 
         return filteredContainer;

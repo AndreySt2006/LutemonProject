@@ -1,7 +1,7 @@
 package com.example.oop_project;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,176 +16,186 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.oop_project.DataProvider.DataProvider;
 import com.example.oop_project.adapter.LutemonAdapter;
-import com.example.oop_project.container.DataContainer;
 import com.example.oop_project.model.Lutemon;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Locale;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Arena extends AppCompatActivity {
     private RecyclerView recyclerArena;
     private TextView tvEmptyView;
+    private TextView tvBattleLog;
     private LutemonAdapter adapter;
-    private DataContainer<Lutemon> arenaContainer;
-    private List<Lutemon> fullInforSelectedLutemon;
-    private int attackTurn1;
-    private int attackTurn2;
-    private int getRemainingHealth1;
-    private int getRemainingHealth2;
+    private ArrayList<Lutemon> combatants = new ArrayList<>();
+
+    private Lutemon lutemon1;
+    private Lutemon lutemon2;
+    private boolean isLutemon1Turn = true;
+    private boolean battleOver = false;
+    private StringBuilder battleLog = new StringBuilder();
+    private Button btnNextAttack; // Class member for enabling/disabling
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_arena);
+
         recyclerArena = findViewById(R.id.recycler_arena);
         recyclerArena.setLayoutManager(new LinearLayoutManager(this));
-        tvEmptyView = findViewById(R.id.tv_empty_view);
-        arenaContainer = new DataContainer<>();
+        tvEmptyView = findViewById(R.id.tv_empty_view_arena);
+        tvBattleLog = findViewById(R.id.tv_battle_log);
+        btnNextAttack = findViewById(R.id.btn_nextAttack); // Assign button
 
-        List<Lutemon> lutemonList = DataProvider.getInstance().getLutemonData();
-        List<Lutemon> selectedLutemons = getIntent().getParcelableArrayListExtra("selected");
-        fullInforSelectedLutemon = new ArrayList<>();
-        for (Lutemon selectedLtm : selectedLutemons) {
-            for (Lutemon lutemon : lutemonList) {
-                if (selectedLtm.getName().equals(lutemon.getName())) {
-                    fullInforSelectedLutemon.add(lutemon);
-                }
-            }
+        ArrayList<Lutemon> selectedLutemons = getIntent().getParcelableArrayListExtra("selectedLutemons");
+
+        if (selectedLutemons == null || selectedLutemons.size() != 2) {
+            Toast.makeText(this, "Error: Need exactly 2 Lutemons for arena.", Toast.LENGTH_LONG).show();
+            finish();
+            return;
         }
-        System.out.println(fullInforSelectedLutemon);
-        for (Lutemon seLTM : fullInforSelectedLutemon) {
-            arenaContainer.addData(seLTM);
+
+        DataProvider dataProvider = DataProvider.getInstance();
+        lutemon1 = dataProvider.getLutemonByName(selectedLutemons.get(0).getName());
+        lutemon2 = dataProvider.getLutemonByName(selectedLutemons.get(1).getName());
+
+        if (lutemon1 == null || lutemon2 == null) {
+            Toast.makeText(this, "Error: One or more selected Lutemons not found.", Toast.LENGTH_LONG).show();
+            finish();
+            return;
         }
-        setupRecyclerView();
+        // For now, assume they start battle at current health from DataProvider.
+        // lutemon1.restoreHealth();
+        // lutemon2.restoreHealth();
+
+
+        combatants.add(lutemon1);
+        combatants.add(lutemon2);
+
+        adapter = new LutemonAdapter(this, combatants);
+        recyclerArena.setAdapter(adapter);
+
+        updateUI();
         setupButtonListeners();
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        logBattleEvent("Battle Start: " + lutemon1.getName() + " vs " + lutemon2.getName());
+        logBattleEvent(String.format(Locale.getDefault(), "%s: %d/%d HP", lutemon1.getName(), lutemon1.getHealth(), lutemon1.getMaxHealth()));
+        logBattleEvent(String.format(Locale.getDefault(), "%s: %d/%d HP", lutemon2.getName(), lutemon2.getHealth(), lutemon2.getMaxHealth()));
+
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.arena_main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
     }
-    private void setupRecyclerView() {
-        adapter = new LutemonAdapter(this, new ArrayList<>());
-        recyclerArena.setAdapter(adapter);
-    }
+
     private void setupButtonListeners() {
-        Button btnBattle = findViewById(R.id.btn_battle);
-        btnBattle.setOnClickListener(v -> {
-            recyclerArena.setAdapter(adapter);
-            //refreshData();
-            updateAdapterLutemon(fullInforSelectedLutemon);
+        // btnNextAttack is already assigned in onCreate
+        btnNextAttack.setOnClickListener(v -> {
+            if (!battleOver) {
+                performAttackTurn();
+            } else {
+                Toast.makeText(this, "Battle is already over.", Toast.LENGTH_SHORT).show();
+            }
         });
-        Button btn_moveHome = findViewById(R.id.btn_arenaToHome);
-        btn_moveHome.setOnClickListener(v->{
-            Intent intent1 = new Intent(Arena.this, MainActivity.class);
-            startActivity(intent1);
-        });
-        Button btn_attack = findViewById(R.id.btn_nextAttack);
-        attackTurn1 = 1;
-        attackTurn2 = 0;
-        Lutemon lutemon1 = fullInforSelectedLutemon.get(0);
-        Lutemon lutemon2 = fullInforSelectedLutemon.get(1);
-        int attack1 = Integer.parseInt(lutemon1.getAttack());
-        int def1 = Integer.parseInt(lutemon1.getDefense());
-        int attack2 = Integer.parseInt(lutemon2.getAttack());
-        int def2 = Integer.parseInt(lutemon2.getDefense());
-        getRemainingHealth1 = Integer.parseInt(lutemon1.getHealth());
-        getRemainingHealth2 = Integer.parseInt(lutemon2.getHealth());
-        int initailhealth1 = Integer.parseInt(lutemon1.getHealth());
-        int initalhealth2 = Integer.parseInt(lutemon2.getHealth());
-        System.out.println(getRemainingHealth1);
-        System.out.println(getRemainingHealth2);
 
-        btn_attack.setOnClickListener(v -> {
-            Random rand = new Random();
-            if (attackTurn1 > attackTurn2) {
-                Toast.makeText(Arena.this,lutemon1.getName() + " turns to attack " + lutemon2.getName(), Toast.LENGTH_SHORT).show();
-                getRemainingHealth2 = getRemainingHealth2 - attack1 + def2;
-                lutemon2.setHealth(getRemainingHealth2);
-                System.out.println(lutemon2.getHealth());
-                if (getRemainingHealth2 >= 0) {
-                    lutemon2.setHealth(getRemainingHealth2);
-                    Toast.makeText(Arena.this,lutemon2.getName() + " still alive after being attacked by " + lutemon1.getName(), Toast.LENGTH_SHORT).show();
-                } else {
-                    lutemon2.setHealth(0);
-                    Toast.makeText(Arena.this,lutemon2.getName() + " is dead after being attacked by " + lutemon1.getName(), Toast.LENGTH_SHORT).show();
-                }
-                recyclerArena.setAdapter(adapter);
-                //refreshData(updatedHealth);
-                attackTurn1 = 0;
-                attackTurn2 = 1;
-            } else if (attackTurn1 < attackTurn2) {
-                Toast.makeText(Arena.this,lutemon2.getName() + " turns to attack " + lutemon1.getName(), Toast.LENGTH_SHORT).show();
-                getRemainingHealth1 = getRemainingHealth1 - attack2 + def1;
-                if (getRemainingHealth1 >= 0) {
-                    lutemon1.setHealth(getRemainingHealth1);
-                    Toast.makeText(Arena.this,lutemon1.getName() + " still alive after being attacked by " + lutemon2.getName(), Toast.LENGTH_SHORT).show();
-                } else {
-                    lutemon1.setHealth(0);
-                    Toast.makeText(Arena.this,lutemon1.getName() + " is dead after being attacked by " + lutemon2.getName(), Toast.LENGTH_SHORT).show();
-                }
-                //updatedHealth.add(lutemon1);
-                //updatedHealth.add(lutemon2);
-                recyclerArena.setAdapter(adapter);
-                //refreshData(updatedHealth);
-                attackTurn1 = 1;
-                attackTurn2 = 0;
+        Button btnMoveHome = findViewById(R.id.btn_arenaToHome);
+        btnMoveHome.setOnClickListener(v -> {
+            if (!battleOver) {
+                lutemon1.restoreHealth();
+                lutemon2.restoreHealth();
+                DataProvider.getInstance().updateLutemon(lutemon1);
+                DataProvider.getInstance().updateLutemon(lutemon2);
+                Toast.makeText(this,"Fled from battle. Health restored.", Toast.LENGTH_SHORT).show();
             }
-            if (Integer.parseInt(lutemon1.getHealth()) == 0) {
-                lutemon1.setHealth(initailhealth1);
-                lutemon2.setHealth(initalhealth2);
-                //lutemon1.setExperience(Integer.parseInt(lutemon1.getExperience()));
-                lutemon2.setExperience(Integer.parseInt(lutemon2.getExperience()) + 1);
-                Toast.makeText(Arena.this,lutemon2.getName() + " beats " + lutemon1.getName(), Toast.LENGTH_SHORT).show();
-                finish();
-            } else if (Integer.parseInt(lutemon2.getHealth()) == 0) {
-                lutemon1.setHealth(initailhealth1);
-                lutemon2.setHealth(initalhealth2);
-                lutemon1.setExperience(Integer.parseInt(lutemon1.getExperience()) + 1);
-                Toast.makeText(Arena.this,lutemon1.getName() + " beats " + lutemon2.getName(), Toast.LENGTH_SHORT).show();
-                finish();
-            }
-            //System.out.println(updatedHealth);
+            finish();
         });
     }
-    private void updateAdapterLutemon(List<Lutemon> lutemonList) {
-        adapter.updateLutemon(lutemonList);
 
-        // Show/hide empty view
-        if (lutemonList.isEmpty()) {
-            tvEmptyView.setVisibility(android.view.View.VISIBLE);
-            recyclerArena.setVisibility(android.view.View.GONE);
+    private void performAttackTurn() {
+        if (battleOver) return;
+
+        Lutemon attacker, defender;
+        int defenderCurrentHealth; // Temporary variable for calculation
+
+        if (isLutemon1Turn) {
+            attacker = lutemon1;
+            defender = lutemon2;
         } else {
-            tvEmptyView.setVisibility(android.view.View.GONE);
-            recyclerArena.setVisibility(android.view.View.VISIBLE);
+            attacker = lutemon2;
+            defender = lutemon1;
+        }
+
+        defenderCurrentHealth = defender.getHealth();
+        int attackerEffectiveAttack = attacker.getAttack();
+        int defenderDefense = defender.getDefense();
+        logBattleEvent(attacker.getName() + " attacks " + defender.getName() + "!");
+
+
+        int damage = Math.max(0, attackerEffectiveAttack - defenderDefense);
+        defenderCurrentHealth -= damage;
+        defenderCurrentHealth = Math.max(0, defenderCurrentHealth); // Ensure health doesn't go below 0
+
+        logBattleEvent(defender.getName() + " takes " + damage + " damage.");
+
+        // Update health directly on the defender object
+        defender.setHealth(defenderCurrentHealth);
+
+
+        // Check if defender died
+        if (defender.getHealth() <= 0) {
+            logBattleEvent(defender.getName() + " fainted!");
+            battleOver = true;
+            endBattle(attacker, defender); // Pass winner and loser
+            btnNextAttack.setEnabled(false); // Disable attack button
+        } else {
+            logBattleEvent(String.format(Locale.getDefault(), "%s has %d/%d HP remaining.", defender.getName(), defender.getHealth(), defender.getMaxHealth()));
+            // logBattleEvent(defender.getName() + " survived the attack.");
+            isLutemon1Turn = !isLutemon1Turn;
+        }
+
+        updateUI();
+    }
+
+    private void endBattle(Lutemon winner, Lutemon loser) {
+        logBattleEvent("Battle Over! " + winner.getName() + " wins!");
+        Toast.makeText(this, winner.getName() + " wins!", Toast.LENGTH_LONG).show();
+
+        DataProvider dataProvider = DataProvider.getInstance();
+        dataProvider.incrementTotalBattles();
+        winner.setExperience(winner.getExperience() + 1);
+        // Assuming +1 attack per XP gained (update attack directly)
+        winner.setAttack(winner.getAttack() + 1);
+        winner.incrementBattlesFought();
+        winner.incrementBattlesWon();
+        loser.incrementBattlesFought();
+
+        winner.restoreHealth();
+        loser.restoreHealth();
+
+        dataProvider.updateLutemon(winner);
+        dataProvider.updateLutemon(loser);
+    }
+
+
+    private void updateUI() {
+        if (adapter != null) {
+            adapter.updateLutemon(new ArrayList<>(combatants));
+        }
+        tvBattleLog.setText(battleLog.toString());
+
+        if (combatants == null || combatants.isEmpty()) {
+            tvEmptyView.setVisibility(View.VISIBLE);
+            recyclerArena.setVisibility(View.GONE);
+        } else {
+            tvEmptyView.setVisibility(View.GONE);
+            recyclerArena.setVisibility(View.VISIBLE);
         }
     }
-    private void refreshData(List<Lutemon> datain) {
-        // Get fresh data from DataProvider
-        List<Lutemon> lutemonList = DataProvider.getInstance().getLutemonData();
-        List<Lutemon> currentData = getIntent().getParcelableArrayListExtra("selected");
-        //List<Lutemon> currentData = datain;
-        List<Lutemon> updatedData = datain;
-        for (Lutemon currentltm : currentData) {
-            //currentltm.setAttack(Integer.parseInt(currentltm.getAttack()) + 2);
-            //currentltm.setDefense(Integer.parseInt(currentltm.getDefense()) + 3);
-            //currentltm.setExperience(Integer.parseInt(currentltm.getExperience()) + 1);
-            currentltm.setHealth(Integer.parseInt(currentltm.getExperience()) + 4);
-            updatedData.add(currentltm);
-        }
-        for (Lutemon updateddataLTM : lutemonList) {
-            for (Lutemon lutemonInUpdatedData : updatedData) {
-                if (updateddataLTM.getName().equals(lutemonInUpdatedData.getName())) {
-                    updateddataLTM.setAttack(Integer.parseInt(lutemonInUpdatedData.getAttack()));
-                    updateddataLTM.setDefense(Integer.parseInt(lutemonInUpdatedData.getDefense()));
-                    updateddataLTM.setHealth(Integer.parseInt(lutemonInUpdatedData.getHealth()));
-                    updateddataLTM.setExperience(Integer.parseInt(lutemonInUpdatedData.getExperience()));
-                }
-            }
-        }
-        updateAdapterLutemon(updatedData);
+
+    private void logBattleEvent(String event) {
+        battleLog.append(event).append("\n");
+        tvBattleLog.setText(battleLog.toString());
     }
 }

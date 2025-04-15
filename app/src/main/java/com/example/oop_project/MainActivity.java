@@ -2,8 +2,10 @@ package com.example.oop_project;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,39 +15,46 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+
 import com.example.oop_project.DataProvider.DataProvider;
 import com.example.oop_project.adapter.LutemonAdapter;
-import com.example.oop_project.container.DataContainer;
 import com.example.oop_project.model.Lutemon;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LutemonAdapter.OnItemClickListener {
     private RecyclerView recyclerInventory;
     private TextView tvEmptyView;
     private LutemonAdapter adapter;
-    private DataContainer<Lutemon> lutemonDataContainer;
+    private Button btnMoveToTraining, btnMoveToBattle;
+    // Variable for the new button
+    private Button btnCreateNewBottom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
         recyclerInventory = findViewById(R.id.recycler_main);
         recyclerInventory.setLayoutManager(new LinearLayoutManager(this));
         tvEmptyView = findViewById(R.id.tv_empty_view);
-        // Load data from the datacontainer
-        lutemonDataContainer = new DataContainer<>();
+        btnMoveToTraining = findViewById(R.id.btn_MoveToTraining);
+        btnMoveToBattle = findViewById(R.id.btn_moveToBattle);
+        // Find the new button
+        btnCreateNewBottom = findViewById(R.id.btn_create_new_bottom);
 
-        // Load sample datas
+        DataProvider.getInstance().restoreAllHealth();
         List<Lutemon> lutemonList = DataProvider.getInstance().getLutemonData();
-        for (Lutemon lutemon : lutemonList) {
-            lutemonDataContainer.addData(lutemon);
-        }
-        // set up recycler view
-        setupRecyclerView();
+
+        adapter = new LutemonAdapter(this, lutemonList);
+        adapter.setOnItemClickListener(this);
+        recyclerInventory.setAdapter(adapter);
+
+        updateUI(lutemonList);
         setupButtonListeners();
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -53,60 +62,80 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void setupRecyclerView() {
-        adapter = new LutemonAdapter(this, new ArrayList<>());
-        recyclerInventory.setAdapter(adapter);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshData();
     }
+
     private void setupButtonListeners() {
         Button btnViewHome = findViewById(R.id.btn_arenaToHome);
         btnViewHome.setOnClickListener(v -> {
-            recyclerInventory.setAdapter(adapter);
+            adapter.clearSelections();
             refreshData();
+            Toast.makeText(this, "Viewing Home", Toast.LENGTH_SHORT).show();
         });
-        Button btnCreateNewLutemon = findViewById(R.id.btn_CreateNewLtm);
-        btnCreateNewLutemon.setOnClickListener(v -> {
+
+        btnCreateNewBottom.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, cr_new_ltmActivity.class);
             startActivity(intent);
         });
-        Button btnMoveTotraining = findViewById(R.id.btn_MoveToTraining);
-        btnMoveTotraining.setOnClickListener(v->{
+
+        btnMoveToTraining.setOnClickListener(v -> {
             List<Lutemon> selected = adapter.getSelectedLutemons();
-            if (selected.size() == 1) {
-                Intent intent1 = new Intent(this, Training_lutemon.class);
-                intent1.putParcelableArrayListExtra("selected", new ArrayList<>(selected));
-                startActivity(intent1);
+            if (selected.size() >= 1) {
+                Intent intent = new Intent(this, Training_lutemon.class);
+                intent.putParcelableArrayListExtra("selectedLutemons", new ArrayList<>(selected));
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Select at least one Lutemon to train", Toast.LENGTH_SHORT).show();
             }
         });
-        Button btnMovetoBattle = findViewById(R.id.btn_moveToBattle);
-        btnMovetoBattle.setOnClickListener(v->{
+
+        btnMoveToBattle.setOnClickListener(v -> {
             List<Lutemon> selected = adapter.getSelectedLutemons();
             if (selected.size() == 2) {
-                Intent intent2 = new Intent(this, Arena.class);
-                intent2.putParcelableArrayListExtra("selected", new ArrayList<>(selected));
-                startActivity(intent2);
+                Intent intent = new Intent(this, Arena.class);
+                intent.putParcelableArrayListExtra("selectedLutemons", new ArrayList<>(selected));
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Select exactly two Lutemons to battle", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-    private void updateAdapterLutemon(List<Lutemon> lutemonList) {
-        adapter.updateLutemon(lutemonList);
 
-        // Show/hide empty view
+        Button btnStats = findViewById(R.id.btn_view_stats);
+        btnStats.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, StatisticsActivity.class);
+            startActivity(intent);
+        });
+    }
+
+
+    private void updateUI(List<Lutemon> lutemonList) {
+        adapter.updateLutemon(lutemonList);
         if (lutemonList.isEmpty()) {
-            tvEmptyView.setVisibility(android.view.View.VISIBLE);
-            recyclerInventory.setVisibility(android.view.View.GONE);
+            tvEmptyView.setVisibility(View.VISIBLE);
+            recyclerInventory.setVisibility(View.GONE);
         } else {
-            tvEmptyView.setVisibility(android.view.View.GONE);
-            recyclerInventory.setVisibility(android.view.View.VISIBLE);
+            tvEmptyView.setVisibility(View.GONE);
+            recyclerInventory.setVisibility(View.VISIBLE);
         }
+        updateButtonStates(adapter.getSelectedLutemons().size());
     }
+
     private void refreshData() {
-        // Get fresh data from DataProvider
+        DataProvider.getInstance().restoreAllHealth();
         List<Lutemon> currentData = DataProvider.getInstance().getLutemonData();
-        updateAdapterLutemon(currentData);
+        updateUI(currentData);
     }
-    public void onItemSelected(List<Lutemon> selected) {
-        // Update UI based on selection count
-        Button btnStart = findViewById(R.id.btn_MoveToTraining);
-        btnStart.setEnabled(selected.size() == 2);
+
+    @Override
+    public void onItemClick(List<Lutemon> selected) {
+        updateButtonStates(selected.size());
+    }
+
+    private void updateButtonStates(int selectionCount) {
+        btnMoveToTraining.setEnabled(selectionCount >= 1);
+        btnMoveToBattle.setEnabled(selectionCount == 2);
     }
 }

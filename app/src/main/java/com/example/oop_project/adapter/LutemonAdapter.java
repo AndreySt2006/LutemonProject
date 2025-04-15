@@ -19,6 +19,7 @@ import com.example.oop_project.model.Lutemon;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale; // Import Locale
 
 public class LutemonAdapter extends RecyclerView.Adapter<LutemonAdapter.ViewHolder> {
     private final List<Lutemon> lutemonList;
@@ -27,18 +28,17 @@ public class LutemonAdapter extends RecyclerView.Adapter<LutemonAdapter.ViewHold
     private OnItemClickListener clickListener;
     private static final int MAX_SELECTIONS = 2;
 
-    // Correct interface definition
     public interface OnItemClickListener {
         void onItemClick(List<Lutemon> selected);
     }
 
     public LutemonAdapter(Context context, List<Lutemon> lutemonList) {
         this.context = context;
-        this.lutemonList = lutemonList;
+        this.lutemonList = new ArrayList<>(lutemonList);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
-        this.clickListener = listener;  // Removed incorrect cast
+        this.clickListener = listener;
     }
 
     @NonNull
@@ -52,29 +52,36 @@ public class LutemonAdapter extends RecyclerView.Adapter<LutemonAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Lutemon lutemonElement = lutemonList.get(position);
 
-        // Convert numbers to String
         holder.tvLutemonName.setText(lutemonElement.getName());
-        holder.tvLutemonHealth.setText(String.valueOf(lutemonElement.getHealth()));
-        holder.tvLutemonExp.setText(String.valueOf(lutemonElement.getExperience()));
         holder.tvLutemonColor.setText(lutemonElement.getColor());
-        holder.tvLutemonAttack.setText(String.valueOf(lutemonElement.getAttack()));
-        holder.tvLutemonDefense.setText(String.valueOf(lutemonElement.getDefense()));
 
-        Glide.with(context).load(lutemonElement.getPicURL()).into(holder.lutemonPic);
+        holder.tvLutemonHealth.setText(String.format(Locale.getDefault(), "HP: %d/%d",
+                lutemonElement.getHealth(), lutemonElement.getMaxHealth()));
+        holder.tvLutemonAttack.setText(String.format(Locale.getDefault(), "Atk: %d",
+                lutemonElement.getAttack()));
+        holder.tvLutemonDefense.setText(String.format(Locale.getDefault(), "Def: %d",
+                lutemonElement.getDefense()));
+        holder.tvLutemonExp.setText(String.format(Locale.getDefault(), "XP: %d",
+                lutemonElement.getExperience()));
 
-        // Selection highlight
+        Glide.with(context)
+                .load(lutemonElement.getPicURL())
+                .placeholder(R.drawable.ic_launcher_background)
+                .error(R.drawable.ic_launcher_foreground)
+                .into(holder.lutemonPic);
+
         holder.itemView.setBackgroundColor(
                 selectedItems.get(position) ? Color.LTGRAY : Color.TRANSPARENT
         );
 
         holder.itemView.setOnClickListener(v -> {
             toggleSelection(position);
-            notifyItemChanged(position);
             if (clickListener != null) {
                 clickListener.onItemClick(getSelectedLutemons());
             }
         });
     }
+
     private void toggleSelection(int position) {
         if (selectedItems.get(position)) {
             selectedItems.delete(position);
@@ -82,29 +89,47 @@ public class LutemonAdapter extends RecyclerView.Adapter<LutemonAdapter.ViewHold
             if (selectedItems.size() < MAX_SELECTIONS) {
                 selectedItems.put(position, true);
             } else {
-                Toast.makeText(context, "Maximum 2 selections allowed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Maximum " + MAX_SELECTIONS + " selections allowed", Toast.LENGTH_SHORT).show();
             }
         }
+        notifyItemChanged(position);
     }
+
     public List<Lutemon> getSelectedLutemons() {
         List<Lutemon> selected = new ArrayList<>();
         for (int i = 0; i < selectedItems.size(); i++) {
             int pos = selectedItems.keyAt(i);
-            selected.add(lutemonList.get(pos));
+            if (pos >= 0 && pos < lutemonList.size()) {
+                selected.add(lutemonList.get(pos));
+            }
         }
         return selected;
+    }
+
+    public void clearSelections() {
+        List<Integer> positionsToNotify = new ArrayList<>();
+        for (int i = 0; i < selectedItems.size(); i++) {
+            positionsToNotify.add(selectedItems.keyAt(i));
+        }
+        selectedItems.clear();
+        for (int pos : positionsToNotify) {
+            if (pos >= 0 && pos < getItemCount()) {
+                notifyItemChanged(pos);
+            }
+        }
     }
 
     @Override
     public int getItemCount() {
         return lutemonList.size();
     }
-    public void updateLutemon(List<Lutemon> newLutemon) { // Use List<Lutemon>
+
+    public void updateLutemon(List<Lutemon> newLutemon) {
         lutemonList.clear();
         lutemonList.addAll(newLutemon);
+        clearSelections();
         notifyDataSetChanged();
     }
-
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvLutemonName, tvLutemonColor, tvLutemonAttack, tvLutemonDefense, tvLutemonHealth, tvLutemonExp;

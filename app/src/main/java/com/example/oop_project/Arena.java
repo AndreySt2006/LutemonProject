@@ -1,3 +1,8 @@
+/*
+The Arena class is an Android activity that manages battles between two Lutemon creatures.
+It provides a turn-based combat system where players can watch their Lutemons fight and see the results.
+*/
+
 package com.example.oop_project;
 
 import android.os.Bundle;
@@ -42,12 +47,15 @@ public class Arena extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_arena);
 
+        // Define all the necessary components of the Arena view including the adapter, recyclerView, id of the button.
+        // Sets up the activity layout and initializes UI components
         recyclerArena = findViewById(R.id.recycler_arena);
         recyclerArena.setLayoutManager(new LinearLayoutManager(this));
         tvEmptyView = findViewById(R.id.tv_empty_view_arena);
         tvBattleLog = findViewById(R.id.tv_battle_log);
         btnNextAttack = findViewById(R.id.btn_nextAttack); // Assign button
 
+        // Retrieves the selected Lutemons from the intent
         ArrayList<Lutemon> selectedLutemons = getIntent().getParcelableArrayListExtra("selectedLutemons");
 
         if (selectedLutemons == null || selectedLutemons.size() != 2) {
@@ -55,8 +63,9 @@ public class Arena extends AppCompatActivity {
             finish();
             return;
         }
-
+        //Validates that exactly 2 Lutemons were selected
         DataProvider dataProvider = DataProvider.getInstance();
+        //Fetches the actual Lutemon objects from DataProvider
         lutemon1 = dataProvider.getLutemonByName(selectedLutemons.get(0).getName());
         lutemon2 = dataProvider.getLutemonByName(selectedLutemons.get(1).getName());
 
@@ -69,7 +78,6 @@ public class Arena extends AppCompatActivity {
         // lutemon1.restoreHealth();
         // lutemon2.restoreHealth();
 
-
         combatants.add(lutemon1);
         combatants.add(lutemon2);
 
@@ -78,18 +86,18 @@ public class Arena extends AppCompatActivity {
 
         updateUI();
         setupButtonListeners();
+        //Initializes the battle log with starting information
         logBattleEvent("Battle Start: " + lutemon1.getName() + " vs " + lutemon2.getName());
         logBattleEvent(String.format(Locale.getDefault(), "%s: %d/%d HP", lutemon1.getName(), lutemon1.getHealth(), lutemon1.getMaxHealth()));
         logBattleEvent(String.format(Locale.getDefault(), "%s: %d/%d HP", lutemon2.getName(), lutemon2.getHealth(), lutemon2.getMaxHealth()));
 
-
+        //Sets up window insets for edge-to-edge display
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.arena_main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
     }
-
     private void setupButtonListeners() {
         // btnNextAttack is already assigned in onCreate
         btnNextAttack.setOnClickListener(v -> {
@@ -99,7 +107,7 @@ public class Arena extends AppCompatActivity {
                 Toast.makeText(this, "Battle is already over.", Toast.LENGTH_SHORT).show();
             }
         });
-
+        //Ends the battle and returns to home, restoring health
         Button btnMoveHome = findViewById(R.id.btn_arenaToHome);
         btnMoveHome.setOnClickListener(v -> {
             if (!battleOver) {
@@ -112,7 +120,6 @@ public class Arena extends AppCompatActivity {
             finish();
         });
     }
-
     private void performAttackTurn() {
         if (battleOver) return;
 

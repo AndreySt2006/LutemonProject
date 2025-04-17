@@ -19,24 +19,45 @@ import com.example.oop_project.model.Lutemon;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale; // Import Locale
+import java.util.Locale;
 
+/**
+ * RecyclerView adapter for displaying Lutemon characters with selection capability.
+ * Supports a maximum of 2 selected items at once.
+ */
 public class LutemonAdapter extends RecyclerView.Adapter<LutemonAdapter.ViewHolder> {
+    // Data storage
     private final List<Lutemon> lutemonList;
     private final Context context;
+
+    // Selection tracking
     private final SparseBooleanArray selectedItems = new SparseBooleanArray();
-    private OnItemClickListener clickListener;
     private static final int MAX_SELECTIONS = 2;
 
+    // Click listener
+    private OnItemClickListener clickListener;
+
+    /**
+     * Interface for item click events
+     */
     public interface OnItemClickListener {
         void onItemClick(List<Lutemon> selected);
     }
 
+    /**
+     * Constructor
+     * @param context The application context
+     * @param lutemonList Initial list of Lutemons to display
+     */
     public LutemonAdapter(Context context, List<Lutemon> lutemonList) {
         this.context = context;
         this.lutemonList = new ArrayList<>(lutemonList);
     }
 
+    /**
+     * Sets the item click listener
+     * @param listener The listener to notify on clicks
+     */
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.clickListener = listener;
     }
@@ -50,30 +71,33 @@ public class LutemonAdapter extends RecyclerView.Adapter<LutemonAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Lutemon lutemonElement = lutemonList.get(position);
+        Lutemon lutemon = lutemonList.get(position);
 
-        holder.tvLutemonName.setText(lutemonElement.getName());
-        holder.tvLutemonColor.setText(lutemonElement.getColor());
+        // Set text values with locale-aware formatting
+        holder.tvLutemonName.setText(lutemon.getName());
+        holder.tvLutemonColor.setText(lutemon.getColor());
+        holder.tvLutemonHealth.setText(String.format(Locale.getDefault(),
+                "HP: %d/%d", lutemon.getHealth(), lutemon.getMaxHealth()));
+        holder.tvLutemonAttack.setText(String.format(Locale.getDefault(),
+                "Atk: %d", lutemon.getAttack()));
+        holder.tvLutemonDefense.setText(String.format(Locale.getDefault(),
+                "Def: %d", lutemon.getDefense()));
+        holder.tvLutemonExp.setText(String.format(Locale.getDefault(),
+                "XP: %d", lutemon.getExperience()));
 
-        holder.tvLutemonHealth.setText(String.format(Locale.getDefault(), "HP: %d/%d",
-                lutemonElement.getHealth(), lutemonElement.getMaxHealth()));
-        holder.tvLutemonAttack.setText(String.format(Locale.getDefault(), "Atk: %d",
-                lutemonElement.getAttack()));
-        holder.tvLutemonDefense.setText(String.format(Locale.getDefault(), "Def: %d",
-                lutemonElement.getDefense()));
-        holder.tvLutemonExp.setText(String.format(Locale.getDefault(), "XP: %d",
-                lutemonElement.getExperience()));
-
+        // Load image using Glide
         Glide.with(context)
-                .load(lutemonElement.getPicURL())
+                .load(lutemon.getPicURL())
                 .placeholder(R.drawable.ic_launcher_background)
                 .error(R.drawable.ic_launcher_foreground)
                 .into(holder.lutemonPic);
 
+        // Highlight selected items
         holder.itemView.setBackgroundColor(
                 selectedItems.get(position) ? Color.LTGRAY : Color.TRANSPARENT
         );
 
+        // Set click listener
         holder.itemView.setOnClickListener(v -> {
             toggleSelection(position);
             if (clickListener != null) {
@@ -82,6 +106,10 @@ public class LutemonAdapter extends RecyclerView.Adapter<LutemonAdapter.ViewHold
         });
     }
 
+    /**
+     * Toggles selection state for an item
+     * @param position The position of the item to toggle
+     */
     private void toggleSelection(int position) {
         if (selectedItems.get(position)) {
             selectedItems.delete(position);
@@ -89,12 +117,18 @@ public class LutemonAdapter extends RecyclerView.Adapter<LutemonAdapter.ViewHold
             if (selectedItems.size() < MAX_SELECTIONS) {
                 selectedItems.put(position, true);
             } else {
-                Toast.makeText(context, "Maximum " + MAX_SELECTIONS + " selections allowed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,
+                        "Maximum " + MAX_SELECTIONS + " selections allowed",
+                        Toast.LENGTH_SHORT).show();
             }
         }
         notifyItemChanged(position);
     }
 
+    /**
+     * Gets currently selected Lutemons
+     * @return List of selected Lutemons
+     */
     public List<Lutemon> getSelectedLutemons() {
         List<Lutemon> selected = new ArrayList<>();
         for (int i = 0; i < selectedItems.size(); i++) {
@@ -106,6 +140,9 @@ public class LutemonAdapter extends RecyclerView.Adapter<LutemonAdapter.ViewHold
         return selected;
     }
 
+    /**
+     * Clears all selections
+     */
     public void clearSelections() {
         List<Integer> positionsToNotify = new ArrayList<>();
         for (int i = 0; i < selectedItems.size(); i++) {
@@ -124,6 +161,10 @@ public class LutemonAdapter extends RecyclerView.Adapter<LutemonAdapter.ViewHold
         return lutemonList.size();
     }
 
+    /**
+     * Updates the adapter with new Lutemon data
+     * @param newLutemon New list of Lutemons
+     */
     public void updateLutemon(List<Lutemon> newLutemon) {
         lutemonList.clear();
         lutemonList.addAll(newLutemon);
@@ -131,9 +172,14 @@ public class LutemonAdapter extends RecyclerView.Adapter<LutemonAdapter.ViewHold
         notifyDataSetChanged();
     }
 
+    /**
+     * ViewHolder class for Lutemon items
+     */
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvLutemonName, tvLutemonColor, tvLutemonAttack, tvLutemonDefense, tvLutemonHealth, tvLutemonExp;
+        TextView tvLutemonName, tvLutemonColor, tvLutemonAttack,
+                tvLutemonDefense, tvLutemonHealth, tvLutemonExp;
         ImageView lutemonPic;
+
         ViewHolder(@NonNull View itemview) {
             super(itemview);
             tvLutemonAttack = itemview.findViewById(R.id.tv_lutemonAttack);

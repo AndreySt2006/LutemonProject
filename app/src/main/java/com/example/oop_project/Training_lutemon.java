@@ -21,7 +21,13 @@ import com.example.oop_project.model.Lutemon;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Activity for training Lutemon characters.
+ * Handles stat improvements through training sessions.
+ */
 public class Training_lutemon extends AppCompatActivity {
+
+    // UI Components
     private LutemonAdapter adapter;
     private TextView tvEmptyView;
     private RecyclerView recyclerTraining;
@@ -30,21 +36,63 @@ public class Training_lutemon extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Enable edge-to-edge display
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_training_lutemon);
 
-        recyclerTraining = findViewById(R.id.recycler_training);
-        recyclerTraining.setLayoutManager(new LinearLayoutManager(this));
-        tvEmptyView = findViewById(R.id.tv_empty_view);
+        // Initialize UI components
+        initializeViews();
 
+        // Get selected Lutemons from intent
         lutemonsInTraining = getIntent().getParcelableArrayListExtra("selectedLutemons");
 
-        adapter = new LutemonAdapter(this, new ArrayList<>(lutemonsInTraining));
-        recyclerTraining.setAdapter(adapter);
+        // Set up RecyclerView with adapter
+        setupRecyclerView();
 
+        // Update initial UI state
         updateUI(lutemonsInTraining);
+
+        // Set up button listeners
         setupButtonListeners();
 
+        // Configure window insets for edge-to-edge display
+        setupWindowInsets();
+    }
+
+    /**
+     * Initializes all view components
+     */
+    private void initializeViews() {
+        recyclerTraining = findViewById(R.id.recycler_training);
+        tvEmptyView = findViewById(R.id.tv_empty_view);
+    }
+
+    /**
+     * Sets up the RecyclerView with adapter and layout
+     */
+    private void setupRecyclerView() {
+        recyclerTraining.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new LutemonAdapter(this, new ArrayList<>(lutemonsInTraining));
+        recyclerTraining.setAdapter(adapter);
+    }
+
+    /**
+     * Sets up button click listeners
+     */
+    private void setupButtonListeners() {
+        // Train button - initiates training session
+        Button btnTrain = findViewById(R.id.btn_train);
+        btnTrain.setOnClickListener(v -> trainSelectedLutemons());
+
+        // Home button - returns to previous screen
+        Button btnViewHome = findViewById(R.id.btn_trainingToHome);
+        btnViewHome.setOnClickListener(v -> finish());
+    }
+
+    /**
+     * Configures edge-to-edge window insets
+     */
+    private void setupWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.training_main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -52,15 +100,11 @@ public class Training_lutemon extends AppCompatActivity {
         });
     }
 
-    private void setupButtonListeners() {
-        Button btnTrain = findViewById(R.id.btn_train);
-        btnTrain.setOnClickListener(v -> trainSelectedLutemons());
-
-        Button btnViewHome = findViewById(R.id.btn_trainingToHome);
-        btnViewHome.setOnClickListener(v -> finish());
-    }
-
+    /**
+     * Trains all selected Lutemons, improving their stats
+     */
     private void trainSelectedLutemons() {
+        // Validate there are Lutemons to train
         if (lutemonsInTraining == null || lutemonsInTraining.isEmpty()) {
             Toast.makeText(this, "No Lutemons to train.", Toast.LENGTH_SHORT).show();
             return;
@@ -69,36 +113,48 @@ public class Training_lutemon extends AppCompatActivity {
         DataProvider dataProvider = DataProvider.getInstance();
         List<Lutemon> updatedListForAdapter = new ArrayList<>();
 
+        // Process each Lutemon in training
         for (Lutemon lutemonToTrain : lutemonsInTraining) {
             Lutemon originalLutemon = dataProvider.getLutemonByName(lutemonToTrain.getName());
 
             if (originalLutemon != null) {
-                int baseAttack = originalLutemon.getAttack() - originalLutemon.getExperience(); // Estimate base attack if needed
+                // Calculate base attack (for potential future use)
+                int baseAttack = originalLutemon.getAttack() - originalLutemon.getExperience();
 
+                // Improve Lutemon stats
                 originalLutemon.setExperience(originalLutemon.getExperience() + 1);
-                originalLutemon.setAttack(originalLutemon.getAttack() + 1); // Simple +1 attack for simplicity here
+                originalLutemon.setAttack(originalLutemon.getAttack() + 1);
                 originalLutemon.incrementTrainingSessions();
 
-                // Update the DataProvider
+                // Update in DataProvider
                 dataProvider.updateLutemon(originalLutemon);
-                updatedListForAdapter.add(originalLutemon); // Add updated original to list
+                updatedListForAdapter.add(originalLutemon);
                 dataProvider.incrementTotalTrainingSessions();
             } else {
-                updatedListForAdapter.add(lutemonToTrain); // Add potentially outdated copy
-                System.err.println("Warning: Trained Lutemon '" + lutemonToTrain.getName() + "' not found in DataProvider for update.");
+                // Handle case where Lutemon isn't found in DataProvider
+                updatedListForAdapter.add(lutemonToTrain);
+                System.err.println("Warning: Trained Lutemon '" +
+                        lutemonToTrain.getName() + "' not found in DataProvider for update.");
             }
         }
 
+        // Update local list and UI
         lutemonsInTraining.clear();
         lutemonsInTraining.addAll(updatedListForAdapter);
         updateUI(lutemonsInTraining);
         Toast.makeText(this, "Training complete!", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Updates the UI based on current Lutemon data
+     * @param lutemonList List of Lutemons to display
+     */
     private void updateUI(List<Lutemon> lutemonList) {
         if (adapter != null) {
             adapter.updateLutemon(new ArrayList<>(lutemonList));
         }
+
+        // Show empty view if no Lutemons exist
         if (lutemonList == null || lutemonList.isEmpty()) {
             tvEmptyView.setVisibility(View.VISIBLE);
             recyclerTraining.setVisibility(View.GONE);

@@ -1,106 +1,106 @@
 [
     {
-        "merged": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-debug-33:/layout_activity_cr_new_ltm.xml.flat",
-        "source": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-main-35:/layout/activity_cr_new_ltm.xml"
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-debug-33:\\mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-main-35:\\mipmap-xhdpi\\ic_launcher.webp"
     },
     {
-        "merged": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-debug-33:/layout_statistic_item.xml.flat",
-        "source": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-main-35:/layout/statistic_item.xml"
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-debug-33:\\mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-main-35:\\mipmap-mdpi\\ic_launcher_round.webp"
     },
     {
-        "merged": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-debug-33:/mipmap-xxxhdpi_ic_launcher.webp.flat",
-        "source": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-main-35:/mipmap-xxxhdpi/ic_launcher.webp"
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-debug-33:\\layout_activity_cr_new_ltm.xml.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-main-35:\\layout\\activity_cr_new_ltm.xml"
     },
     {
-        "merged": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-debug-33:/mipmap-mdpi_ic_launcher.webp.flat",
-        "source": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-main-35:/mipmap-mdpi/ic_launcher.webp"
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-debug-33:\\mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-main-35:\\mipmap-xxxhdpi\\ic_launcher_round.webp"
     },
     {
-        "merged": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-debug-33:/layout_activity_statistics.xml.flat",
-        "source": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-main-35:/layout/activity_statistics.xml"
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-debug-33:\\xml_backup_rules.xml.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-main-35:\\xml\\backup_rules.xml"
     },
     {
-        "merged": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-debug-33:/layout_activity_arena.xml.flat",
-        "source": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-main-35:/layout/activity_arena.xml"
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-debug-33:\\mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-main-35:\\mipmap-xxxhdpi\\ic_launcher.webp"
     },
     {
-        "merged": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-debug-33:/mipmap-xxhdpi_ic_launcher.webp.flat",
-        "source": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-main-35:/mipmap-xxhdpi/ic_launcher.webp"
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-debug-33:\\mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-main-35:\\mipmap-xxhdpi\\ic_launcher.webp"
     },
     {
-        "merged": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-debug-33:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
-        "source": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-main-35:/mipmap-xxhdpi/ic_launcher_round.webp"
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-debug-33:\\drawable_sword_slash.jpeg.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-main-35:\\drawable\\sword_slash.jpeg"
     },
     {
-        "merged": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-debug-33:/layout_activity_training_lutemon.xml.flat",
-        "source": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-main-35:/layout/activity_training_lutemon.xml"
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-debug-33:\\mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-main-35:\\mipmap-hdpi\\ic_launcher_round.webp"
     },
     {
-        "merged": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-debug-33:/layout_lutemon_stat_item.xml.flat",
-        "source": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-main-35:/layout/lutemon_stat_item.xml"
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-debug-33:\\mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-main-35:\\mipmap-mdpi\\ic_launcher.webp"
     },
     {
-        "merged": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-debug-33:/drawable_sword_slash.jpeg.flat",
-        "source": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-main-35:/drawable/sword_slash.jpeg"
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-debug-33:\\mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-main-35:\\mipmap-xxhdpi\\ic_launcher_round.webp"
     },
     {
-        "merged": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-debug-33:/xml_data_extraction_rules.xml.flat",
-        "source": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-main-35:/xml/data_extraction_rules.xml"
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-debug-33:\\layout_activity_statistics.xml.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-main-35:\\layout\\activity_statistics.xml"
     },
     {
-        "merged": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-debug-33:/mipmap-hdpi_ic_launcher.webp.flat",
-        "source": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-main-35:/mipmap-hdpi/ic_launcher.webp"
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-debug-33:\\mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-main-35:\\mipmap-anydpi-v26\\ic_launcher.xml"
     },
     {
-        "merged": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-debug-33:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
-        "source": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-main-35:/mipmap-xxxhdpi/ic_launcher_round.webp"
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-debug-33:\\xml_data_extraction_rules.xml.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-main-35:\\xml\\data_extraction_rules.xml"
     },
     {
-        "merged": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-debug-33:/mipmap-mdpi_ic_launcher_round.webp.flat",
-        "source": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-main-35:/mipmap-mdpi/ic_launcher_round.webp"
-    },
-    {
-        "merged": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-debug-33:/mipmap-hdpi_ic_launcher_round.webp.flat",
-        "source": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-main-35:/mipmap-hdpi/ic_launcher_round.webp"
-    },
-    {
-        "merged": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-debug-33:/layout_activity_main.xml.flat",
-        "source": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-main-35:/layout/activity_main.xml"
-    },
-    {
-        "merged": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-debug-33:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
-        "source": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-main-35:/mipmap-anydpi-v26/ic_launcher_round.xml"
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-debug-33:\\layout_activity_training_lutemon.xml.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-main-35:\\layout\\activity_training_lutemon.xml"
     },
     {
         "merged": "com.example.oop_project.app-debug-33:/layout_activity_main.xml.flat",
         "source": "com.example.oop_project.app-main-35:/layout/activity_main.xml"
     },
     {
-        "merged": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-debug-33:/xml_backup_rules.xml.flat",
-        "source": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-main-35:/xml/backup_rules.xml"
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-debug-33:\\layout_activity_arena.xml.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-main-35:\\layout\\activity_arena.xml"
     },
     {
-        "merged": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-debug-33:/mipmap-xhdpi_ic_launcher.webp.flat",
-        "source": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-main-35:/mipmap-xhdpi/ic_launcher.webp"
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-debug-33:\\layout_lutemon_stat_item.xml.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-main-35:\\layout\\lutemon_stat_item.xml"
     },
     {
-        "merged": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-debug-33:/drawable_ic_launcher_foreground.xml.flat",
-        "source": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-main-35:/drawable/ic_launcher_foreground.xml"
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-debug-33:\\mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-main-35:\\mipmap-hdpi\\ic_launcher.webp"
     },
     {
-        "merged": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-debug-33:/mipmap-anydpi-v26_ic_launcher.xml.flat",
-        "source": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-main-35:/mipmap-anydpi-v26/ic_launcher.xml"
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-debug-33:\\layout_statistic_item.xml.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-main-35:\\layout\\statistic_item.xml"
     },
     {
-        "merged": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-debug-33:/layout_lutemon.xml.flat",
-        "source": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-main-35:/layout/lutemon.xml"
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-debug-33:\\layout_lutemon.xml.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-main-35:\\layout\\lutemon.xml"
     },
     {
-        "merged": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-debug-33:/drawable_ic_launcher_background.xml.flat",
-        "source": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-main-35:/drawable/ic_launcher_background.xml"
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-debug-33:\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-main-35:\\mipmap-anydpi-v26\\ic_launcher_round.xml"
     },
     {
-        "merged": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-debug-33:/mipmap-xhdpi_ic_launcher_round.webp.flat",
-        "source": "/Users/andreystewart/.gradle/daemon/8.11.1/com.example.oop_project.app-main-35:/mipmap-xhdpi/ic_launcher_round.webp"
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-debug-33:\\layout_activity_main.xml.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-main-35:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-debug-33:\\mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-main-35:\\mipmap-xhdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-debug-33:\\drawable_ic_launcher_foreground.xml.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-main-35:\\drawable\\ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-debug-33:\\drawable_ic_launcher_background.xml.flat",
+        "source": "C:\\Users\\Admin\\.gradle\\daemon\\8.11.1\\com.example.oop_project.app-main-35:\\drawable\\ic_launcher_background.xml"
     }
 ]

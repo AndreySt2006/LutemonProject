@@ -188,4 +188,10 @@ public class Lutemon implements Parcelable {
         dest.writeInt(battlesWon);
         dest.writeInt(trainingSessions);
     }
+    public Lutemon() {
+        // Initialize default values if needed
+        this.name = "";
+        this.color = "";
+        this.picURL = "";
+    }
 }

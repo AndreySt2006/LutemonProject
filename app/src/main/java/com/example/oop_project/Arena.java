@@ -25,7 +25,6 @@ import com.example.oop_project.model.Lutemon;
 
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Random;
 
 public class Arena extends AppCompatActivity {
     private RecyclerView recyclerArena;
@@ -140,7 +139,9 @@ public class Arena extends AppCompatActivity {
         logBattleEvent(attacker.getName() + " attacks " + defender.getName() + "!");
 
 
-        int damage = Math.max(0, attackerEffectiveAttack - defenderDefense);
+        //int damage = Math.max(0, attackerEffectiveAttack - defenderDefense);
+        int maxDamage = Math.max(attackerEffectiveAttack - defenderDefense, 0);
+        int damage = (int) (Math.random() * 3 + (maxDamage + 1));
         defenderCurrentHealth -= damage;
         defenderCurrentHealth = Math.max(0, defenderCurrentHealth); // Ensure health doesn't go below 0
 

@@ -9,6 +9,7 @@
         android:targetSdkVersion="35" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <permission
         android:name="com.example.oop_project.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
